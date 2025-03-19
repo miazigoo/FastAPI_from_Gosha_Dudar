@@ -3,37 +3,52 @@ from typing import Optional, Annotated
 from pydantic import BaseModel, Field
 
 
-class User(BaseModel):
-    id: int
+class UserBase(BaseModel):
     name: str
     age: int
 
+    # name: Annotated[
+    #     str, Field(
+    #         ..., title="Имя пользователя",
+    #         min_length=2,
+    #         max_length=40
+    #     )
+    # ]
+    # age: Annotated[
+    #     int, Field(
+    #         ..., title="Возраст пользователя",
+    #         ge=1, le=120
+    #     )
+    # ]
 
-class Post(BaseModel):
+
+class UserCreate(UserBase):
+    pass
+
+
+class User(UserBase):
     id: int
-    title: str
-    body: Optional[str] = None
-    author: User
+
+    class Config:
+        orm_mode = True
 
 
-class PostCreate(BaseModel):
+class PostBase(BaseModel):
     title: str
     body: Optional[str] = None
     author_id: int
 
 
-class UserCreate(BaseModel):
-    name: Annotated[
-        str, Field(
-            ..., title="Имя пользователя",
-            min_length=2,
-            max_length=40
-        )
-    ]
-    age: Annotated[
-        int, Field(
-            ..., title="Возраст пользователя",
-            ge=1, le=120
-        )
-    ]
+class PostResponse(PostBase):
+    id: int
+    author: User
+
+    class Config:
+        orm_mode = True
+
+
+class PostCreate(PostBase):
+    pass
+
+
 
