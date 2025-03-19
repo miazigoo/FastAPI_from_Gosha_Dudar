@@ -11,8 +11,14 @@ class User(BaseModel):
 
 class Post(BaseModel):
     id: int
-    title: Optional[str] = None
+    title: str
     body: Optional[str] = None
     author: User
+
+
+class PostCreate(BaseModel):
+    title: str
+    body: Optional[str] = None
+    author_id: int
 
 
