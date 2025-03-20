@@ -24,7 +24,7 @@ def get_db():
         print("Выключение DB")
 
 
-@router.post("/user/add", response_model=DbUser)
+@router.post("/user/add/", response_model=DbUser)
 async def create_user(
         user: UserCreate, db: Session = Depends(get_db)
 ) -> DbUser:
@@ -35,7 +35,7 @@ async def create_user(
     return db_user
 
 
-@router.post("/post/add", response_model=PostResponse)
+@router.post("/post/add/", response_model=PostResponse)
 async def create_post(
         post: PostCreate, db: Session = Depends(get_db)
 ) -> PostResponse:
@@ -49,8 +49,21 @@ async def create_post(
     return db_post
 
 
-@router.get("/posts", response_model=List[PostResponse])
+@router.get("/posts/", response_model=List[PostResponse])
 async def get_posts(db: Session = Depends(get_db)):
     return db.query(Post).all()
+
+
+@router.get("/users/", response_model=List[DbUser])
+async def get_users(db: Session = Depends(get_db)):
+    return db.query(User).all()
+
+
+@router.get("/users/{name}", response_model=DbUser)
+async def get_user(name: str, db: Session = Depends(get_db)):
+    db_user = db.query(User).filter(User.name == name).first()
+    if db_user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return db_user
 
 
